@@ -6,17 +6,34 @@ class Cliente(BaseModel):
 
     __tablename__ = "clientes"
 
-    nome = db.Column(db.String(150), nullable=False)
+    representante = db.Column(
+        db.String(150),
+        nullable=False
+    )
 
-    nome_fantasia = db.Column(db.String(150))
+    responsavel = db.Column(
+        db.String(150),
+        nullable=False
+    )
 
-    cpf = db.Column(db.String(14), nullable=False, unique=True)
+    cpf = db.Column(
+        db.String(14),
+        nullable=False,
+        unique=True
+    )
 
-    telefone = db.Column(db.String(20), nullable=False)
+    telefone = db.Column(
+        db.String(20),
+        nullable=False
+    )
 
-    endereco = db.Column(db.String(200))
+    endereco = db.Column(
+        db.String(200)
+    )
 
-    observacoes = db.Column(db.Text)
+    observacoes = db.Column(
+        db.Text
+    )
 
     def __repr__(self):
-        return f"<Cliente {self.nome}>"
+        return f"<Cliente {self.representante}>"

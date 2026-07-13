@@ -18,12 +18,7 @@ def create_app():
 
     migrate.init_app(app, db)
 
-    from app.models import (
-        Cliente,
-        Fabrica,
-        Colaborador,
-        Socio
-    )
+    from app import models
 
     from app.routes.dashboard import dashboard_bp
 
