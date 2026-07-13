@@ -5,3 +5,7 @@ from .socio import Socio
 from .usuario import Usuario
 from .parametro import Parametro
 from .aporte import Aporte
+from .operacao import Operacao
+from .boleto import Boleto
+from .conta_receber import ContaReceber
+from .conta_pagar_colaborador import ContaPagarColaborador

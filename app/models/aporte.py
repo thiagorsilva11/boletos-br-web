@@ -18,7 +18,7 @@ class Aporte(BaseModel):
     )
 
     tipo = db.Column(
-        db.String(20),
+        db.String(10),
         nullable=False
     )
 
