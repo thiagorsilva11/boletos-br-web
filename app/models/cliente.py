@@ -3,7 +3,6 @@ from app.models.base import BaseModel
 
 
 class Cliente(BaseModel):
-
     __tablename__ = "clientes"
 
     representante = db.Column(
@@ -28,7 +27,7 @@ class Cliente(BaseModel):
     )
 
     endereco = db.Column(
-        db.String(200)
+        db.String(250)
     )
 
     observacoes = db.Column(
