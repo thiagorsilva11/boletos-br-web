@@ -1,0 +1,44 @@
+{% extends "layout/base.html" %}
+
+{% block content %}
+
+<div class="card">
+
+    <h2>Nova Operação</h2>
+
+    <form method="POST">
+
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            <label class="form-label">Representante</label>
+            {{ form.cliente_id(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Fábrica</label>
+            {{ form.fabrica_id(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Colaborador</label>
+            {{ form.colaborador_id(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Data da Operação</label>
+            {{ form.data_operacao(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Observações</label>
+            {{ form.observacao(class="form-control", rows="4") }}
+        </div>
+
+        {{ form.submit(class="btn btn-primary") }}
+
+    </form>
+
+</div>
+
+{% endblock %}

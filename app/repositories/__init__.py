@@ -1,0 +1,2 @@
+from .cliente_repository import ClienteRepository
+from .fabrica_repository import FabricaRepository

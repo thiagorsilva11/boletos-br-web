@@ -3,41 +3,40 @@ from app.models.base import BaseModel
 
 
 class Parametro(BaseModel):
-
     __tablename__ = "parametros"
 
     taxa_empresa = db.Column(
-        db.Numeric(5,2),
+        db.Numeric(5, 2),
         nullable=False,
         default=7
     )
 
     percentual_colaborador = db.Column(
-        db.Numeric(5,2),
+        db.Numeric(5, 2),
         nullable=False,
         default=50
     )
 
     juros_30 = db.Column(
-        db.Numeric(5,2),
+        db.Numeric(5, 2),
         nullable=False,
         default=10
     )
 
     juros_60 = db.Column(
-        db.Numeric(5,2),
+        db.Numeric(5, 2),
         nullable=False,
         default=20
     )
 
     juros_90 = db.Column(
-        db.Numeric(5,2),
+        db.Numeric(5, 2),
         nullable=False,
         default=30
     )
 
     juros_120 = db.Column(
-        db.Numeric(5,2),
+        db.Numeric(5, 2),
         nullable=False,
         default=40
     )
@@ -53,3 +52,12 @@ class Parametro(BaseModel):
         nullable=False,
         default=15
     )
+
+    numero_operacao = db.Column(
+        db.Integer,
+        nullable=False,
+        default=1
+    )
+
+    def __repr__(self):
+        return f"<Parametro {self.id}>"

@@ -1,0 +1,123 @@
+{% extends "layout/base.html" %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>Representantes</h2>
+
+        <a href="{{ url_for('clientes.novo') }}" class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Novo Representante
+
+        </a>
+
+    </div>
+
+    <form method="GET" class="row mb-4">
+
+        <div class="col-md-10">
+
+            <input
+                type="text"
+                name="busca"
+                class="form-control"
+                placeholder="Pesquisar representante..."
+                value="{{ busca }}">
+
+        </div>
+
+        <div class="col-md-2 d-grid">
+
+            <button type="submit" class="btn btn-secondary">
+
+                Pesquisar
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <table class="table table-hover align-middle">
+
+        <thead class="table-light">
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Representante</th>
+
+                <th>Responsável</th>
+
+                <th>Telefone</th>
+
+                <th width="180">Ações</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for cliente in clientes %}
+
+            <tr>
+
+                <td>{{ cliente.id }}</td>
+
+                <td>{{ cliente.representante }}</td>
+
+                <td>{{ cliente.responsavel }}</td>
+
+                <td>{{ cliente.telefone }}</td>
+
+                <td>
+
+                    <a
+                        href="{{ url_for('clientes.editar', id=cliente.id) }}"
+                        class="btn btn-warning btn-sm">
+
+                        <i class="bi bi-pencil"></i>
+
+                    </a>
+
+                    <a
+                        href="{{ url_for('clientes.excluir', id=cliente.id) }}"
+                        class="btn btn-danger btn-sm"
+                        onclick="return confirm('Deseja realmente excluir este representante?')">
+
+                        <i class="bi bi-trash"></i>
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+        {% else %}
+
+            <tr>
+
+                <td colspan="5" class="text-center text-muted">
+
+                    Nenhum representante encontrado.
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

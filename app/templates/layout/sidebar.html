@@ -1,0 +1,69 @@
+<div class="sidebar">
+
+    <div class="logo">
+
+        <h3>BOLETOS BR</h3>
+
+        <small>Gestão Financeira</small>
+
+    </div>
+
+    <nav>
+
+        <a href="{{ url_for('dashboard.index') }}">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('clientes.listar') }}">
+            <i class="bi bi-people"></i>
+            Representantes
+        </a>
+
+        <a href="{{ url_for('fabricas.listar') }}">
+            <i class="bi bi-building"></i>
+            Fábricas
+        </a>
+
+        <a href="{{ url_for('colaboradores.listar') }}">
+            <i class="bi bi-person-badge"></i>
+            Colaboradores
+        </a>
+
+        <a href="#">
+            <i class="bi bi-person-workspace"></i>
+            Sócios
+        </a>
+
+        <hr>
+
+        <a href="{{ url_for('operacoes.nova') }}">
+            <i class="bi bi-journal-plus"></i>
+            Operações
+        </a>
+
+        <a href="#">
+            <i class="bi bi-cash-stack"></i>
+            Financeiro
+        </a>
+
+        <a href="#">
+            <i class="bi bi-graph-up"></i>
+            Dashboard Financeiro
+        </a>
+
+        <a href="#">
+            <i class="bi bi-file-earmark-bar-graph"></i>
+            Relatórios
+        </a>
+
+        <hr>
+
+        <a href="#">
+            <i class="bi bi-gear"></i>
+            Configurações
+        </a>
+
+    </nav>
+
+</div>
