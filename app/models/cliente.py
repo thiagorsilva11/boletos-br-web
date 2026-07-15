@@ -7,7 +7,8 @@ class Cliente(BaseModel):
 
     representante = db.Column(
         db.String(150),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     responsavel = db.Column(
@@ -34,5 +35,31 @@ class Cliente(BaseModel):
         db.Text
     )
 
+    ativo = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=True,
+        index=True
+    )
+
+    operacoes = db.relationship(
+        "Operacao",
+        backref="cliente",
+        lazy=True
+    )
+
+    @property
+    def quantidade_operacoes(self):
+        return len(self.operacoes)
+
+    def ativo_status(self):
+        return self.ativo
+
+    def inativo_status(self):
+        return not self.ativo
+
     def __repr__(self):
-        return f"<Cliente {self.representante}>"
+        return (
+            f"<Cliente "
+            f"{self.representante}>"
+        )
