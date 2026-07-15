@@ -7,7 +7,8 @@ class Socio(BaseModel):
 
     nome = db.Column(
         db.String(150),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     cpf = db.Column(
@@ -20,10 +21,26 @@ class Socio(BaseModel):
     )
 
     saldo = db.Column(
-        db.Numeric(15,2),
+        db.Numeric(15, 2),
         nullable=False,
         default=0
     )
 
+    ativo = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=True,
+        index=True
+    )
+
+    def ativo_status(self):
+        return self.ativo
+
+    def inativo_status(self):
+        return not self.ativo
+
     def __repr__(self):
-        return f"<Socio {self.nome}>"
+        return (
+            f"<Socio "
+            f"{self.nome}>"
+        )
