@@ -1,109 +1,96 @@
 from decimal import Decimal, ROUND_HALF_UP
 
-from app.models.parametro import Parametro
+from app.repositories.boleto_repository import BoletoRepository
+from app.repositories.conta_receber_repository import ContaReceberRepository
+from app.models.boleto import Boleto
+from app.models.conta_receber import ContaReceber
 
 
 class BoletoService:
 
     @staticmethod
-    def calcular(
-        valor_compra,
-        percentual_comissao,
-        percentual_taxa=None,
-        percentual_colaborador=None,
-        juros=0,
+    def criar(
+        operacao,
+        form,
     ):
-        """
-        Calcula todos os valores financeiros do boleto.
 
-        Caso os percentuais não sejam informados,
-        utiliza os parâmetros do sistema.
-        """
+        dias = (
+            form.data_prevista_recebimento.data
+            - form.data_compra.data
+        ).days
 
-        parametro = Parametro.obter()
+        valor_compra = Decimal(
+            str(form.valor_compra.data)
+        )
 
-        if percentual_taxa is None:
-            percentual_taxa = parametro.taxa_empresa
-
-        if percentual_colaborador is None:
-            percentual_colaborador = parametro.percentual_colaborador
-
-        valor_compra = Decimal(str(valor_compra))
-        percentual_comissao = Decimal(str(percentual_comissao))
-        percentual_taxa = Decimal(str(percentual_taxa))
-        percentual_colaborador = Decimal(str(percentual_colaborador))
-        juros = Decimal(str(juros))
+        percentual = Decimal(
+            str(form.percentual_comissao.data)
+        )
 
         valor_comissao = (
-            valor_compra * percentual_comissao / Decimal("100")
-        ).quantize(
-            Decimal("0.01"),
-            rounding=ROUND_HALF_UP
-        )
-
-        taxa_empresa = (
-            valor_comissao * percentual_taxa / Decimal("100")
-        ).quantize(
-            Decimal("0.01"),
-            rounding=ROUND_HALF_UP
-        )
-
-        valor_colaborador = (
-            taxa_empresa * percentual_colaborador / Decimal("100")
-        ).quantize(
-            Decimal("0.01"),
-            rounding=ROUND_HALF_UP
-        )
-
-        valor_liquido = (
-            valor_comissao
-            - taxa_empresa
-            - juros
-        ).quantize(
-            Decimal("0.01"),
-            rounding=ROUND_HALF_UP
-        )
-
-        return {
-            "valor_compra": valor_compra,
-            "percentual_comissao": percentual_comissao,
-            "valor_comissao": valor_comissao,
-            "percentual_taxa": percentual_taxa,
-            "taxa_empresa": taxa_empresa,
-            "percentual_colaborador": percentual_colaborador,
-            "valor_colaborador": valor_colaborador,
-            "juros": juros,
-            "valor_liquido": valor_liquido,
-        }
-
-    @staticmethod
-    def calcular_comissao(
-        valor_compra,
-        percentual_comissao,
-    ):
-        valor_compra = Decimal(str(valor_compra))
-        percentual_comissao = Decimal(str(percentual_comissao))
-
-        return (
             valor_compra
-            * percentual_comissao
+            * percentual
             / Decimal("100")
         ).quantize(
             Decimal("0.01"),
-            rounding=ROUND_HALF_UP
+            ROUND_HALF_UP,
         )
 
-    @staticmethod
-    def calcular_dias(
-        data_operacao,
-        data_recebimento_prevista,
-    ):
-        """
-        Retorna a quantidade de dias entre
-        a operação e o recebimento previsto.
-        """
+        juros = Decimal("0")
 
-        return (
-            data_recebimento_prevista
-            - data_operacao
-        ).days
+        taxa = Decimal("0")
+
+        valor_repasse = valor_comissao
+
+        boleto = Boleto(
+
+            operacao_id=operacao.id,
+
+            numero_boleto=form.numero_boleto.data,
+
+            data_compra=form.data_compra.data,
+
+            valor_compra=valor_compra,
+
+            percentual_comissao=percentual,
+
+            valor_comissao=valor_comissao,
+
+            dias=dias,
+
+            juros=juros,
+
+            taxa_cobranca=taxa,
+
+            valor_repasse=valor_repasse,
+
+            data_prevista_recebimento=form.data_prevista_recebimento.data,
+
+            status=0,
+
+        )
+
+        BoletoRepository.adicionar(
+            boleto
+        )
+
+        conta = ContaReceber(
+
+            boleto=boleto,
+
+            data_prevista=form.data_prevista_recebimento.data,
+
+            valor=valor_comissao,
+
+            status=0,
+
+        )
+
+        ContaReceberRepository.adicionar(
+            conta
+        )
+
+        BoletoRepository.commit()
+
+        return boleto
+        
