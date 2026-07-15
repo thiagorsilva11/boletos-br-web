@@ -15,12 +15,6 @@ class OperacaoService:
     ):
         """
         Cria uma nova operação.
-
-        Nesta versão (1.0) a operação continua
-        armazenando fábrica e colaborador.
-
-        Nas próximas versões essas informações
-        passarão para os boletos.
         """
 
         numero = NumeroOperacaoService.gerar()
@@ -36,17 +30,12 @@ class OperacaoService:
         )
 
         try:
-
             OperacaoRepository.adicionar(operacao)
-
             OperacaoRepository.commit()
-
             return operacao
 
         except Exception:
-
             OperacaoRepository.rollback()
-
             raise
 
     @staticmethod
@@ -54,6 +43,14 @@ class OperacaoService:
         return OperacaoRepository.buscar_por_numero(
             numero_operacao
         )
+
+    @staticmethod
+    def buscar_por_id(id):
+        return OperacaoRepository.buscar_por_id(id)
+
+    @staticmethod
+    def listar():
+        return OperacaoRepository.listar()
 
     @staticmethod
     def listar_abertas():
@@ -64,3 +61,14 @@ class OperacaoService:
         return OperacaoRepository.listar_por_cliente(
             cliente_id
         )
+
+    @staticmethod
+    def atualizar(operacao):
+        OperacaoRepository.atualizar()
+        return operacao
+
+    @staticmethod
+    def cancelar(operacao):
+        operacao.status = 1
+        OperacaoRepository.atualizar()
+        return operacao
