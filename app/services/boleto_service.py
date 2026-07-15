@@ -9,18 +9,20 @@ class BoletoService:
         percentual_comissao,
         percentual_taxa,
         percentual_colaborador,
-        juros
+        juros=0
     ):
+        """
+        Calcula todos os valores financeiros do boleto.
 
-        valor_compra = Decimal(valor_compra)
+        Não grava dados no banco.
+        Apenas retorna os valores calculados.
+        """
 
-        percentual_comissao = Decimal(percentual_comissao)
-
-        percentual_taxa = Decimal(percentual_taxa)
-
-        percentual_colaborador = Decimal(percentual_colaborador)
-
-        juros = Decimal(juros)
+        valor_compra = Decimal(str(valor_compra))
+        percentual_comissao = Decimal(str(percentual_comissao))
+        percentual_taxa = Decimal(str(percentual_taxa))
+        percentual_colaborador = Decimal(str(percentual_colaborador))
+        juros = Decimal(str(juros))
 
         valor_comissao = (
             valor_compra * percentual_comissao
@@ -30,7 +32,7 @@ class BoletoService:
             valor_comissao * percentual_taxa
         ) / Decimal("100")
 
-        valor_repasse = (
+        valor_colaborador = (
             taxa_empresa * percentual_colaborador
         ) / Decimal("100")
 
@@ -41,8 +43,29 @@ class BoletoService:
         )
 
         return {
+            "valor_compra": valor_compra,
+            "percentual_comissao": percentual_comissao,
             "valor_comissao": valor_comissao,
+            "percentual_taxa": percentual_taxa,
             "taxa_empresa": taxa_empresa,
-            "valor_repasse": valor_repasse,
+            "percentual_colaborador": percentual_colaborador,
+            "valor_colaborador": valor_colaborador,
+            "juros": juros,
             "valor_liquido": valor_liquido,
         }
+
+    @staticmethod
+    def calcular_comissao(
+        valor_compra,
+        percentual_comissao
+    ):
+        """
+        Retorna apenas o valor da comissão.
+        """
+
+        valor_compra = Decimal(str(valor_compra))
+        percentual_comissao = Decimal(str(percentual_comissao))
+
+        return (
+            valor_compra * percentual_comissao
+        ) / Decimal("100")
