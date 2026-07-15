@@ -1,3 +1,5 @@
+from datetime import date
+
 from app.models.boleto import Boleto
 from app.repositories.base_repository import BaseRepository
 
@@ -8,16 +10,18 @@ class BoletoRepository(BaseRepository):
 
     @classmethod
     def buscar_por_numero(cls, numero_boleto):
-        return cls.model.query.filter_by(
-            numero_boleto=numero_boleto
-        ).first()
+        return (
+            cls.model.query
+            .filter_by(numero_boleto=numero_boleto)
+            .first()
+        )
 
     @classmethod
     def listar_por_operacao(cls, operacao_id):
         return (
             cls.model.query
             .filter_by(operacao_id=operacao_id)
-            .order_by(cls.model.id)
+            .order_by(cls.model.id.asc())
             .all()
         )
 
@@ -26,7 +30,9 @@ class BoletoRepository(BaseRepository):
         return (
             cls.model.query
             .filter_by(status=0)
-            .order_by(cls.model.data_prevista_recebimento)
+            .order_by(
+                cls.model.data_prevista_recebimento.asc()
+            )
             .all()
         )
 
@@ -35,6 +41,49 @@ class BoletoRepository(BaseRepository):
         return (
             cls.model.query
             .filter_by(status=1)
-            .order_by(cls.model.data_recebimento.desc())
+            .order_by(
+                cls.model.data_recebimento.desc()
+            )
+            .all()
+        )
+
+    @classmethod
+    def listar_vencidos(cls):
+        return (
+            cls.model.query
+            .filter(
+                cls.model.status == 0,
+                cls.model.data_prevista_recebimento < date.today(),
+            )
+            .order_by(
+                cls.model.data_prevista_recebimento.asc()
+            )
+            .all()
+        )
+
+    @classmethod
+    def listar_por_periodo(
+        cls,
+        data_inicial,
+        data_final,
+    ):
+        return (
+            cls.model.query
+            .filter(
+                cls.model.data_prevista_recebimento >= data_inicial,
+                cls.model.data_prevista_recebimento <= data_final,
+            )
+            .order_by(
+                cls.model.data_prevista_recebimento.asc()
+            )
+            .all()
+        )
+
+    @classmethod
+    def listar_por_status(cls, status):
+        return (
+            cls.model.query
+            .filter_by(status=status)
+            .order_by(cls.model.id.desc())
             .all()
         )
