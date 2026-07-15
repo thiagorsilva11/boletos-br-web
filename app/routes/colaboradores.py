@@ -4,16 +4,17 @@ from flask import (
     redirect,
     url_for,
     flash,
-    request
+    request,
 )
 
 from app.forms.colaborador_form import ColaboradorForm
 from app.services.colaborador_service import ColaboradorService
 
+
 colaboradores_bp = Blueprint(
     "colaboradores",
     __name__,
-    url_prefix="/colaboradores"
+    url_prefix="/colaboradores",
 )
 
 
@@ -27,7 +28,7 @@ def listar():
     return render_template(
         "colaboradores/lista.html",
         colaboradores=colaboradores,
-        busca=busca
+        busca=busca,
     )
 
 
@@ -42,7 +43,7 @@ def novo():
 
         flash(
             "Colaborador cadastrado com sucesso.",
-            "success"
+            "success",
         )
 
         return redirect(
@@ -51,7 +52,9 @@ def novo():
 
     return render_template(
         "colaboradores/novo.html",
-        form=form
+        form=form,
+        titulo="Novo Colaborador",
+        modo="novo",
     )
 
 
@@ -60,15 +63,29 @@ def editar(id):
 
     colaborador = ColaboradorService.buscar(id)
 
+    if colaborador is None:
+
+        flash(
+            "Colaborador não encontrado.",
+            "danger",
+        )
+
+        return redirect(
+            url_for("colaboradores.listar")
+        )
+
     form = ColaboradorForm(obj=colaborador)
 
     if form.validate_on_submit():
 
-        ColaboradorService.atualizar(colaborador, form)
+        ColaboradorService.atualizar(
+            colaborador,
+            form,
+        )
 
         flash(
             "Colaborador atualizado com sucesso.",
-            "success"
+            "success",
         )
 
         return redirect(
@@ -77,7 +94,9 @@ def editar(id):
 
     return render_template(
         "colaboradores/novo.html",
-        form=form
+        form=form,
+        titulo="Editar Colaborador",
+        modo="editar",
     )
 
 
@@ -86,11 +105,22 @@ def excluir(id):
 
     colaborador = ColaboradorService.buscar(id)
 
+    if colaborador is None:
+
+        flash(
+            "Colaborador não encontrado.",
+            "danger",
+        )
+
+        return redirect(
+            url_for("colaboradores.listar")
+        )
+
     ColaboradorService.excluir(colaborador)
 
     flash(
         "Colaborador excluído com sucesso.",
-        "success"
+        "success",
     )
 
     return redirect(
