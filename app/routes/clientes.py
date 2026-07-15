@@ -4,16 +4,17 @@ from flask import (
     redirect,
     url_for,
     flash,
-    request
+    request,
 )
 
 from app.forms.cliente_form import ClienteForm
 from app.services.cliente_service import ClienteService
 
+
 clientes_bp = Blueprint(
     "clientes",
     __name__,
-    url_prefix="/clientes"
+    url_prefix="/clientes",
 )
 
 
@@ -27,7 +28,7 @@ def listar():
     return render_template(
         "clientes/lista.html",
         clientes=clientes,
-        busca=busca
+        busca=busca,
     )
 
 
@@ -42,7 +43,7 @@ def novo():
 
         flash(
             "Representante cadastrado com sucesso.",
-            "success"
+            "success",
         )
 
         return redirect(
@@ -51,7 +52,9 @@ def novo():
 
     return render_template(
         "clientes/novo.html",
-        form=form
+        form=form,
+        titulo="Novo Representante",
+        modo="novo",
     )
 
 
@@ -60,15 +63,29 @@ def editar(id):
 
     cliente = ClienteService.buscar(id)
 
+    if cliente is None:
+
+        flash(
+            "Representante não encontrado.",
+            "danger",
+        )
+
+        return redirect(
+            url_for("clientes.listar")
+        )
+
     form = ClienteForm(obj=cliente)
 
     if form.validate_on_submit():
 
-        ClienteService.atualizar(cliente, form)
+        ClienteService.atualizar(
+            cliente,
+            form,
+        )
 
         flash(
             "Representante atualizado com sucesso.",
-            "success"
+            "success",
         )
 
         return redirect(
@@ -77,7 +94,9 @@ def editar(id):
 
     return render_template(
         "clientes/novo.html",
-        form=form
+        form=form,
+        titulo="Editar Representante",
+        modo="editar",
     )
 
 
@@ -86,12 +105,24 @@ def excluir(id):
 
     cliente = ClienteService.buscar(id)
 
+    if cliente is None:
+
+        flash(
+            "Representante não encontrado.",
+            "danger",
+        )
+
+        return redirect(
+            url_for("clientes.listar")
+        )
+
     ClienteService.excluir(cliente)
 
     flash(
         "Representante excluído com sucesso.",
-        "success"
+        "success",
     )
 
     return redirect(
-        url_for("clientes.listar"))
+        url_for("clientes.listar")
+    )
