@@ -4,17 +4,16 @@ from flask import (
     redirect,
     url_for,
     flash,
-    request
+    request,
 )
 
 from app.forms.fabrica_form import FabricaForm
 from app.services.fabrica_service import FabricaService
 
-
 fabricas_bp = Blueprint(
     "fabricas",
     __name__,
-    url_prefix="/fabricas"
+    url_prefix="/fabricas",
 )
 
 
@@ -28,7 +27,7 @@ def listar():
     return render_template(
         "fabricas/lista.html",
         fabricas=fabricas,
-        busca=busca
+        busca=busca,
     )
 
 
@@ -43,7 +42,7 @@ def novo():
 
         flash(
             "Fábrica cadastrada com sucesso.",
-            "success"
+            "success",
         )
 
         return redirect(
@@ -52,7 +51,9 @@ def novo():
 
     return render_template(
         "fabricas/novo.html",
-        form=form
+        form=form,
+        titulo="Nova Fábrica",
+        modo="novo",
     )
 
 
@@ -61,15 +62,29 @@ def editar(id):
 
     fabrica = FabricaService.buscar(id)
 
+    if fabrica is None:
+
+        flash(
+            "Fábrica não encontrada.",
+            "danger",
+        )
+
+        return redirect(
+            url_for("fabricas.listar")
+        )
+
     form = FabricaForm(obj=fabrica)
 
     if form.validate_on_submit():
 
-        FabricaService.atualizar(fabrica, form)
+        FabricaService.atualizar(
+            fabrica,
+            form,
+        )
 
         flash(
             "Fábrica atualizada com sucesso.",
-            "success"
+            "success",
         )
 
         return redirect(
@@ -78,7 +93,9 @@ def editar(id):
 
     return render_template(
         "fabricas/novo.html",
-        form=form
+        form=form,
+        titulo="Editar Fábrica",
+        modo="editar",
     )
 
 
@@ -87,11 +104,22 @@ def excluir(id):
 
     fabrica = FabricaService.buscar(id)
 
+    if fabrica is None:
+
+        flash(
+            "Fábrica não encontrada.",
+            "danger",
+        )
+
+        return redirect(
+            url_for("fabricas.listar")
+        )
+
     FabricaService.excluir(fabrica)
 
     flash(
         "Fábrica excluída com sucesso.",
-        "success"
+        "success",
     )
 
     return redirect(
