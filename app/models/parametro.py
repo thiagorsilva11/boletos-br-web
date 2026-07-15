@@ -59,5 +59,19 @@ class Parametro(BaseModel):
         default=1
     )
 
+    @classmethod
+    def obter(cls):
+        parametro = cls.query.first()
+
+        if not parametro:
+            parametro = cls()
+            db.session.add(parametro)
+            db.session.commit()
+
+        return parametro
+
     def __repr__(self):
-        return f"<Parametro {self.id}>"
+        return (
+            f"<Parametro "
+            f"{self.id}>"
+        )
