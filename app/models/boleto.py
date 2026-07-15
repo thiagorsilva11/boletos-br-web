@@ -13,7 +13,8 @@ class Boleto(BaseModel):
 
     numero_boleto = db.Column(
         db.String(50),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     data_compra = db.Column(
@@ -69,8 +70,26 @@ class Boleto(BaseModel):
     status = db.Column(
         db.Integer,
         nullable=False,
-        default=0
+        default=0,
+        index=True
     )
 
+    conta_receber = db.relationship(
+        "ContaReceber",
+        backref="boleto",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
+
+    def recebido(self):
+        return self.status == 1
+
+    def pendente(self):
+        return self.status == 0
+
     def __repr__(self):
-        return f"<Boleto {self.numero_boleto}>"
+        return (
+            f"<Boleto "
+            f"{self.numero_boleto} - "
+            f"R$ {self.valor_comissao}>"
+        )
