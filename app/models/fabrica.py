@@ -7,7 +7,8 @@ class Fabrica(BaseModel):
 
     nome = db.Column(
         db.String(150),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     endereco = db.Column(
@@ -27,6 +28,25 @@ class Fabrica(BaseModel):
     observacoes = db.Column(
         db.Text
     )
+
+    ativa = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=True,
+        index=True
+    )
+
+    boletos = db.relationship(
+        "Operacao",
+        backref="fabrica",
+        lazy=True
+    )
+
+    def ativa_status(self):
+        return self.ativa
+
+    def inativa_status(self):
+        return not self.ativa
 
     def __repr__(self):
         return f"<Fabrica {self.nome}>"
