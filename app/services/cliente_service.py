@@ -16,12 +16,12 @@ class ClienteService:
     def criar(form):
 
         cliente = Cliente(
-            representante=form.representante.data,
-            responsavel=form.responsavel.data,
-            cpf=form.cpf.data,
-            telefone=form.telefone.data,
-            endereco=form.endereco.data,
-            observacoes=form.observacoes.data
+            representante=form.representante.data.strip(),
+            responsavel=form.responsavel.data.strip(),
+            cpf=form.cpf.data.strip() if form.cpf.data else None,
+            telefone=form.telefone.data.strip() if form.telefone.data else None,
+            endereco=form.endereco.data.strip() if form.endereco.data else None,
+            observacoes=form.observacoes.data.strip() if form.observacoes.data else None,
         )
 
         ClienteRepository.salvar(cliente)
@@ -31,16 +31,45 @@ class ClienteService:
     @staticmethod
     def atualizar(cliente, form):
 
-        cliente.representante = form.representante.data
-        cliente.responsavel = form.responsavel.data
-        cliente.cpf = form.cpf.data
-        cliente.telefone = form.telefone.data
-        cliente.endereco = form.endereco.data
-        cliente.observacoes = form.observacoes.data
+        cliente.representante = form.representante.data.strip()
+
+        cliente.responsavel = form.responsavel.data.strip()
+
+        cliente.cpf = (
+            form.cpf.data.strip()
+            if form.cpf.data
+            else None
+        )
+
+        cliente.telefone = (
+            form.telefone.data.strip()
+            if form.telefone.data
+            else None
+        )
+
+        cliente.endereco = (
+            form.endereco.data.strip()
+            if form.endereco.data
+            else None
+        )
+
+        cliente.observacoes = (
+            form.observacoes.data.strip()
+            if form.observacoes.data
+            else None
+        )
 
         ClienteRepository.atualizar()
+
+        return cliente
 
     @staticmethod
     def excluir(cliente):
 
         ClienteRepository.excluir(cliente)
+
+    @staticmethod
+    def buscar_por_representante(representante):
+        return ClienteRepository.buscar_por_representante(
+            representante
+        )
