@@ -2,42 +2,82 @@
 
 {% block content %}
 
-<div class="card">
+<div class="card shadow-sm">
 
-    <h2>Nova Operação</h2>
+    <div class="card-header">
+        <h3 class="mb-0">Nova Operação</h3>
+    </div>
 
-    <form method="POST">
+    <div class="card-body">
 
-        {{ form.hidden_tag() }}
+        <form method="POST">
 
-        <div class="mb-3">
-            <label class="form-label">Representante</label>
-            {{ form.cliente_id(class="form-select") }}
-        </div>
+            {{ form.hidden_tag() }}
 
-        <div class="mb-3">
-            <label class="form-label">Fábrica</label>
-            {{ form.fabrica_id(class="form-select") }}
-        </div>
+            <div class="row">
 
-        <div class="mb-3">
-            <label class="form-label">Colaborador</label>
-            {{ form.colaborador_id(class="form-select") }}
-        </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">
+                        Representante
+                    </label>
+                    {{ form.cliente_id() }}
+                </div>
 
-        <div class="mb-3">
-            <label class="form-label">Data da Operação</label>
-            {{ form.data_operacao(class="form-control") }}
-        </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">
+                        Fábrica
+                    </label>
+                    {{ form.fabrica_id() }}
+                </div>
 
-        <div class="mb-3">
-            <label class="form-label">Observações</label>
-            {{ form.observacao(class="form-control", rows="4") }}
-        </div>
+            </div>
 
-        {{ form.submit(class="btn btn-primary") }}
+            <div class="row">
 
-    </form>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">
+                        Colaborador
+                    </label>
+                    {{ form.colaborador_id() }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">
+                        Data da Operação
+                    </label>
+                    {{ form.data_operacao() }}
+                </div>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Observações
+                </label>
+
+                {{ form.observacao() }}
+
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-end">
+
+                <a
+                    href="{{ url_for('operacoes.listar') }}"
+                    class="btn btn-secondary me-2"
+                >
+                    Cancelar
+                </a>
+
+                {{ form.submit() }}
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 
