@@ -1,9 +1,17 @@
-from decimal import Decimal, ROUND_HALF_UP
-
-from app.repositories.boleto_repository import BoletoRepository
-from app.repositories.conta_receber_repository import ContaReceberRepository
 from app.models.boleto import Boleto
 from app.models.conta_receber import ContaReceber
+
+from app.repositories.boleto_repository import (
+    BoletoRepository
+)
+
+from app.repositories.conta_receber_repository import (
+    ContaReceberRepository
+)
+
+from app.services.motor_financeiro_service import (
+    MotorFinanceiroService
+)
 
 
 class BoletoService:
@@ -11,7 +19,7 @@ class BoletoService:
     @staticmethod
     def criar(
         operacao,
-        form,
+        form
     ):
 
         dias = (
@@ -19,55 +27,45 @@ class BoletoService:
             - form.data_compra.data
         ).days
 
-        valor_compra = Decimal(
-            str(form.valor_compra.data)
+        financeiro = MotorFinanceiroService.calcular(
+            valor_boleto=form.valor_compra.data,
+            percentual_comissao=form.percentual_comissao.data,
+            dias=dias
         )
-
-        percentual = Decimal(
-            str(form.percentual_comissao.data)
-        )
-
-        valor_comissao = (
-            valor_compra
-            * percentual
-            / Decimal("100")
-        ).quantize(
-            Decimal("0.01"),
-            ROUND_HALF_UP,
-        )
-
-        juros = Decimal("0")
-
-        taxa = Decimal("0")
-
-        valor_repasse = valor_comissao
 
         boleto = Boleto(
 
             operacao_id=operacao.id,
 
-            numero_boleto=form.numero_boleto.data,
+            numero_boleto=form.numero_boleto.data.strip(),
 
             data_compra=form.data_compra.data,
 
-            valor_compra=valor_compra,
+            valor_compra=financeiro["valor_boleto"],
 
-            percentual_comissao=percentual,
+            percentual_comissao=financeiro[
+                "percentual_comissao"
+            ],
 
-            valor_comissao=valor_comissao,
+            valor_comissao=financeiro[
+                "valor_comissao"
+            ],
 
-            dias=dias,
+            dias=financeiro["dias"],
 
-            juros=juros,
+            juros=financeiro["juros"],
 
-            taxa_cobranca=taxa,
+            taxa_cobranca=financeiro[
+                "taxa_empresa"
+            ],
 
-            valor_repasse=valor_repasse,
+            valor_repasse=financeiro[
+                "valor_representante"
+            ],
 
             data_prevista_recebimento=form.data_prevista_recebimento.data,
 
             status=0,
-
         )
 
         BoletoRepository.adicionar(
@@ -78,12 +76,13 @@ class BoletoService:
 
             boleto=boleto,
 
+            valor=financeiro[
+                "valor_representante"
+            ],
+
             data_prevista=form.data_prevista_recebimento.data,
 
-            valor=valor_comissao,
-
             status=0,
-
         )
 
         ContaReceberRepository.adicionar(
@@ -93,4 +92,3 @@ class BoletoService:
         BoletoRepository.commit()
 
         return boleto
-        
