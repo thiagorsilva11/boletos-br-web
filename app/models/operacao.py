@@ -8,7 +8,8 @@ class Operacao(BaseModel):
     numero_operacao = db.Column(
         db.String(20),
         nullable=False,
-        unique=True
+        unique=True,
+        index=True
     )
 
     cliente_id = db.Column(
@@ -31,7 +32,8 @@ class Operacao(BaseModel):
 
     data_operacao = db.Column(
         db.Date,
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     observacao = db.Column(
@@ -41,8 +43,43 @@ class Operacao(BaseModel):
     status = db.Column(
         db.Integer,
         nullable=False,
-        default=0
+        default=0,
+        index=True
     )
 
+    boletos = db.relationship(
+        "Boleto",
+        backref="operacao",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+    def aberta(self):
+        return self.status == 0
+
+    def encerrada(self):
+        return self.status == 1
+
+    @property
+    def quantidade_boletos(self):
+        return len(self.boletos)
+
+    @property
+    def valor_total_compra(self):
+        return sum(
+            boleto.valor_compra
+            for boleto in self.boletos
+        )
+
+    @property
+    def valor_total_comissao(self):
+        return sum(
+            boleto.valor_comissao
+            for boleto in self.boletos
+        )
+
     def __repr__(self):
-        return f"<Operacao {self.numero_operacao}>" 
+        return (
+            f"<Operacao "
+            f"{self.numero_operacao}>"
+        )
